@@ -1,3 +1,4 @@
+import 'package:chatapp/auth/auth_service.dart';
 import 'package:flutter/material.dart';
 
 import '../components/my_button.dart';
@@ -15,7 +16,36 @@ class RegisterPage extends StatelessWidget {
   RegisterPage({super.key, required this.onTap});
 
   // method register
-  void register() {}
+  void register(BuildContext context) {
+    // get auth service
+    final _auth = AuthService();
+
+    //password match -> create user
+    if (_passwordController.text == _confirmPasswordController.text) {
+      try {
+        _auth.signUpWithEmailPassword(
+          _emailController.text,
+          _passwordController.text,
+        );
+      } catch (e) {
+        showDialog(context: context, builder: (context) =>
+            AlertDialog(
+                title: Text(e.toString())
+            ),
+        );
+      }
+    }
+    // password dont match -> show eror to fix
+    else {
+      showDialog(context: context, builder: (context) =>
+      const AlertDialog(
+          title: Text("password tidak boleh sama")
+          ),
+      );
+    }
+  }
+
+
 
 
   @override
@@ -76,7 +106,7 @@ class RegisterPage extends StatelessWidget {
             // login button
             MyButton(
               text: "Daftar",
-              onTap: register,
+              onTap: () => register(context),
             ),
 
             const SizedBox(height: 25),
